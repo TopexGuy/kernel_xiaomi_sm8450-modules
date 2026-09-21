@@ -337,7 +337,7 @@ char *aw87xxx_show_current_profile(int dev_index)
 		}
 	}
 
-	AW_LOGE("not found struct aw87xxx, dev_index = [%d]", dev_index);
+	AW_LOGD("not found struct aw87xxx, dev_index = [%d]", dev_index);
 	return NULL;
 }
 EXPORT_SYMBOL(aw87xxx_show_current_profile);

@@ -1026,6 +1026,7 @@ static int wcd937x_codec_enable_hphl_pa(struct snd_soc_dapm_widget *w,
 }
 
 extern int aw87xxx_set_profile(int dev_index, char *profile);
+extern char *aw87xxx_show_current_profile(int dev_index);
 
 extern void fsm_speaker_onn(void);
 extern void fsm_speaker_off(void);
@@ -1081,10 +1082,10 @@ static int wcd937x_codec_enable_aux_pa(struct snd_soc_dapm_widget *w,
 						SLV_BOLERO_EVT_RX_MUTE,
 						(WCD_RX3 << 0x10));
 		wcd_enable_irq(&wcd937x->irq_info, WCD937X_IRQ_AUX_PDM_WD_INT);
-		ret = aw87xxx_set_profile(AW_DEV_0, aw_profile[0]);
-                if (ret < 0) {
-                        fsm_speaker_onn();
-                }
+		if (aw87xxx_show_current_profile(AW_DEV_0) == NULL)
+			fsm_speaker_onn();
+		else
+			aw87xxx_set_profile(AW_DEV_0, aw_profile[0]);
 		break;
 	case SND_SOC_DAPM_PRE_PMD:
 		wcd_disable_irq(&wcd937x->irq_info, WCD937X_IRQ_AUX_PDM_WD_INT);
@@ -1092,10 +1093,10 @@ static int wcd937x_codec_enable_aux_pa(struct snd_soc_dapm_widget *w,
 			wcd937x->update_wcd_event(wcd937x->handle,
 						SLV_BOLERO_EVT_RX_MUTE,
 						(WCD_RX3 << 0x10 | 0x1));
-		ret = aw87xxx_set_profile(AW_DEV_0, aw_profile[11]);
-		if (ret < 0) {
+		if (aw87xxx_show_current_profile(AW_DEV_0) == NULL)
 			fsm_speaker_off();
-		}
+		else
+			aw87xxx_set_profile(AW_DEV_0, aw_profile[11]);
 		break;
 	case SND_SOC_DAPM_POST_PMD:
 		/* Add delay as per hw requirement */
